@@ -1615,6 +1615,10 @@ doSubmitToActionQ(action_t * const pAction, wti_t * const pWti, smsg_t *pMsg)
 	}
 	pWti->execState.bPrevWasSuspended
 		= (iRet == RS_RET_SUSPENDED || iRet == RS_RET_ACTION_FAILED);
+	struct json_object *suspendedJson = pWti->execState.bPrevWasSuspended ?
+		json_object_new_string("on") : json_object_new_string("off");
+		;
+	msgAddJSON(pMsg, (uchar*)"!PreviousActionIsSuspended", suspendedJson, 0, 0);
 
 	if (iRet == RS_RET_ACTION_FAILED)	/* Increment failed counter */
 		STATSCOUNTER_INC(pAction->ctrFail, pAction->mutCtrFail);
